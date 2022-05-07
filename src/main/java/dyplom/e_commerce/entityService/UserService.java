@@ -13,6 +13,11 @@ public class UserService {
         this.userRepository = userRepository;
     }
 
+    public User getUserById(int id){
+        return userRepository.findById(id)
+                .orElseThrow(RuntimeException::new);
+    }
+
     public void saveUser(User user){
         userRepository.save(user);
     }

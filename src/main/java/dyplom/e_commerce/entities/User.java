@@ -17,8 +17,9 @@ public class User {
     @Setter(AccessLevel.PRIVATE)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-    @Column(name = "role_id")
-    private int roleId;
+    @Enumerated(value = EnumType.STRING)
+    @Column(name = "role")
+    private Role role;
     @Column(name = "email", nullable = false, unique = true, length = 50)
     private String email;
     @Column(name = "password",  nullable = false, length = 64)
@@ -33,5 +34,8 @@ public class User {
     private LocalDateTime registrationDate;
     @Column(name = "phone_number", length = 20)
     private String phoneNumber;
+    @Enumerated(value = EnumType.STRING)
+    @Column(name = "status", length = 45)
+    private Status status;
 
 }
