@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Controller
 public class AppController {
@@ -36,13 +37,14 @@ public class AppController {
         String encodedPassword = encoder.encode(user.getPassword());
         user.setPassword(encodedPassword);
         user.setRegistrationDate(LocalDateTime.now());
-        user.setRoleId(1);
         userService.saveUser(user);
         return "register_success";
     }
 
     @GetMapping("/order-list")
-    public String viewOrderList() {
+    public String viewOrderList(Model model) {
+        List<User> userList = userService.findAll();
+        model.addAttribute("userList", userList);
         return "orders";
     }
 }

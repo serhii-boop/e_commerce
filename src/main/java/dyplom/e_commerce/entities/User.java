@@ -5,6 +5,8 @@ import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Set;
 
 @Data
 @Getter @Setter
@@ -17,8 +19,6 @@ public class User {
     @Setter(AccessLevel.PRIVATE)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-    @Column(name = "role_id")
-    private int roleId;
     @Column(name = "email", nullable = false, unique = true, length = 50)
     private String email;
     @Column(name = "password",  nullable = false, length = 64)
@@ -34,4 +34,13 @@ public class User {
     @Column(name = "phone_number", length = 20)
     private String phoneNumber;
 
+    @ManyToMany
+    @JoinTable(name = "users_roles",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id"))
+    private Set<Role> roles = new HashSet<>();
+
+    public void addRole(Role role) {
+        this.roles.add(role);
+    }
 }
