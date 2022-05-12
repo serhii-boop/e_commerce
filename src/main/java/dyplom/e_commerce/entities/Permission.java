@@ -1,6 +1,7 @@
 package dyplom.e_commerce.entities;
 
 public enum Permission {
+    CUSTOMER("customer"),
     USER("user"),
     ADMIN("admin");
 
