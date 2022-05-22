@@ -18,6 +18,18 @@ public class UserService {
                 .orElseThrow(RuntimeException::new);
     }
 
+    public User getUserByEmail(String email){
+        return userRepository.findByEmail(email)
+                .orElseThrow(RuntimeException::new);
+    }
+
+//    public void saveUserRole(Integer roleId, Integer userId){
+//        UsersRoles role = new UsersRoles();
+//        role.setRoleId(roleId);
+//        role.setUserId(userId);
+//        userRolesRepository.save(role);
+//    }
+
     public void saveUser(User user){
         userRepository.save(user);
     }

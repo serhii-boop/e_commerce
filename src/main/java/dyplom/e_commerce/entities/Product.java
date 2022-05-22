@@ -54,4 +54,12 @@ public class Product {
     private Double price;
     @Column(name = "photo_path")
     private String photoPath;
+
+    @Transient
+    public String getLogoImagePath() {
+        if (photoPath == null || id == null) return null;
+
+        return "/logo/" + id + "/" + photoPath;
+    }
+
 }

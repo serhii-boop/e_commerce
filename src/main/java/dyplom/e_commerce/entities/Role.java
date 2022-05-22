@@ -1,28 +1,16 @@
 package dyplom.e_commerce.entities;
 
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-
-import java.util.Set;
-import java.util.stream.Collectors;
-
 public enum Role {
-    CUSTOMER(Set.of(Permission.CUSTOMER)),
-    USER(Set.of(Permission.USER, Permission.CUSTOMER)),
-    ADMIN(Set.of(Permission.CUSTOMER, Permission.USER, Permission.ADMIN));
+    USER("USER"),
+    ADMIN("ADMIN");
 
-    private final Set<Permission> permissions;
+    private final String role;
 
-    Role(Set<Permission> permissions) {
-        this.permissions = permissions;
+    Role(String role) {
+        this.role = role;
     }
 
-    public Set<Permission> getPermissions() {
-        return permissions;
-    }
-
-    public Set<SimpleGrantedAuthority> getAuthorities() {
-        return getPermissions().stream()
-                .map(permission -> new SimpleGrantedAuthority(permission.getPermission()))
-                .collect(Collectors.toSet());
+    public String getRole() {
+        return role;
     }
 }
