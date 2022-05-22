@@ -2,6 +2,10 @@ package dyplom.e_commerce.entityService;
 
 import dyplom.e_commerce.entities.User;
 import dyplom.e_commerce.repositories.UserRepository;
+import dyplom.e_commerce.security.SecurityUser;
+import dyplom.e_commerce.security.UserDetailsServiceImpl;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -22,6 +26,8 @@ public class UserService {
         return userRepository.findByEmail(email)
                 .orElseThrow(RuntimeException::new);
     }
+
+
 
 //    public void saveUserRole(Integer roleId, Integer userId){
 //        UsersRoles role = new UsersRoles();

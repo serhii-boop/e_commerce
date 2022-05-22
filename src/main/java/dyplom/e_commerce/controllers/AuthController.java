@@ -80,7 +80,6 @@ public class AuthController {
         List<Product> productList = firstPage.getContent();
         long totalItems = firstPage.getTotalElements();
         int totalPages = firstPage.getTotalPages();
-        model.addAttribute("power", power);
         model.addAttribute("currentPage", page);
         model.addAttribute("totalItems", totalItems);
         model.addAttribute("totalPages", totalPages);
