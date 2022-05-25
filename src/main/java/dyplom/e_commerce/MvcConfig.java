@@ -14,7 +14,12 @@ public class MvcConfig implements WebMvcConfigurer {
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         Path branUploadDir = Paths.get("./logo");
         String brandUploadPath = branUploadDir.toFile().getAbsolutePath();
-
+        Path categoryUploadDir = Paths.get("./category");
+        String categoryUploadPath = categoryUploadDir.toFile().getAbsolutePath();
+        Path productUploadDir = Paths.get("./product");
+        String productUploadPath = productUploadDir.toFile().getAbsolutePath();
+        registry.addResourceHandler("/product/**").addResourceLocations("file:/" + productUploadPath + "/");
+        registry.addResourceHandler("/category/**").addResourceLocations("file:/" + categoryUploadPath + "/");
         registry.addResourceHandler("/logo/**").addResourceLocations("file:/" + brandUploadPath + "/");
     }
 }

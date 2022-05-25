@@ -1,16 +1,42 @@
 package dyplom.e_commerce.entities;
 
-public enum Role {
-    USER("USER"),
-    ADMIN("ADMIN");
+import javax.persistence.*;
 
-    private final String role;
+@Entity
+@Table(name = "roles")
+public class Role {
 
-    Role(String role) {
-        this.role = role;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
+    @Column(name = "name", length = 40, nullable = false, unique = true)
+    private String name;
+
+    public Role() {
     }
 
-    public String getRole() {
-        return role;
+    public Role(String name) {
+        this.name = name;
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    @Override
+    public String toString() {
+        return name;
     }
 }

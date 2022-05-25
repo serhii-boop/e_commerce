@@ -1,55 +1,73 @@
 package dyplom.e_commerce.entityService;
 
+import dyplom.e_commerce.entities.Category;
 import dyplom.e_commerce.entities.Product;
-import dyplom.e_commerce.repositories.ResistorRepository;
+import dyplom.e_commerce.repositories.ProductRepository;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
 @Service
+@Transactional
 public class ProductService {
-    private final ResistorRepository resistorRepository;
 
-    public ProductService(ResistorRepository resistorRepository) {
-        this.resistorRepository = resistorRepository;
+    public final static int PRODUCT_PER_PAGE = 10;
+    private final ProductRepository productRepository;
+
+    public ProductService(ProductRepository productRepository) {
+        this.productRepository = productRepository;
     }
 
-    public Product getProductById(int id) {
-        return resistorRepository.findById(id).orElseThrow(RuntimeException::new);
+    public List<Product> listAll() {
+        return (List<Product>) productRepository.findAll();
     }
 
-    public Page<Product> getResistorsList(int pageNumber) {
-        Pageable pageable = PageRequest.of(pageNumber - 1,3);
-        return resistorRepository.getAllByCategory("resistor", pageable);
+    public Page<Product> listByPage(int pageNum, String sortField, String sortDir, String keyword, Integer categoryId){
+        Sort sort = Sort.by(sortField);
+        sort = sortDir.equals("asc") ? sort.ascending() : sort.descending();
+        Pageable pageable = PageRequest.of(pageNum - 1, PRODUCT_PER_PAGE, sort);
+        if (keyword != null && !keyword.isEmpty()) {
+            return productRepository.findAll(keyword, pageable);
+        }
+        if (categoryId != null && categoryId > 0) {
+            return productRepository.findAllInCategory(categoryId, pageable);
+        }
+        return productRepository.findAll(pageable);
     }
 
-    public Product saveResistor(Product product) {
-        resistorRepository.save(product);
-        return product;
+    public Product save(Product product) {
+        if (product.getId() == null) {
+            product.setCreatedTime(new Date());
+        }
+
+        product.setUpdatedTime(new Date());
+        return productRepository.save(product);
     }
 
-//    public Page<Product> findPaginatedResistors(Pageable pageable) {
-//        List<Product> resistors = getResistorsList();
-//        int pageSize = pageable.getPageSize();
-//        int currentPage = pageable.getPageNumber();
-//        int startItem = currentPage * pageSize;
-//        List<Product> list;
-//
-//        if (resistors.size() < startItem) {
-//            list = Collections.emptyList();
-//        } else {
-//            int toIndex = Math.min(startItem + pageSize, resistors.size());
-//            list = resistors.subList(startItem, toIndex);
-//        }
-//
-//        Page<Product> resistorPage
-//                = new PageImpl<Product>(list, PageRequest.of(currentPage, pageSize), resistors.size());
-//
-//        return resistorPage;
-//    }
+    public Product findByName(String name){
+        return productRepository.findByName(name);
+    }
+
+    public void updateProductEnabledStatus(Integer id, boolean enabled) {
+        productRepository.updateEnabledStatus(id, enabled);
+    }
+
+    public void delete(Integer id){
+        Long countById = productRepository.countById(id);
+        if (countById == null || countById == 0) {
+            throw new RuntimeException();
+        }
+        productRepository.deleteById(id);
+    }
+
+    public Product getById(Integer id) {
+        return productRepository.findById(id).get();
+    }
+
 }

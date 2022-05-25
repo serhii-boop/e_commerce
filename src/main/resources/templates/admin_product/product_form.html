@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="https://www.thymeleaf.org.thymeleaf-extras-springsecurity5">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>[[${pageTitle}]]</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js" ></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.min.js" integrity="sha384-Atwg2Pkwv9vp0ygtn1JAojH0nYbwNJLPhwyoVbhoPwBhjQPR5VtM2+xf0Uwh9KtT" crossorigin="anonymous"></script>
+    <link href="https://cdn.jsdelivr.net/npm/boxicons@latest/css/boxicons.min.css" rel="stylesheet">
+
+</head>
+<body>
+<form th:action="@{'/logout'}" method="post" th:hidden="true" name="logoutForm">
+    <input type="submit">
+</form>
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="container">
+        <a href="@{/}" class="navbar-brand"><h1>Logo</h1></a>
+        <div class="collapse navbar-collapse">
+            <ul class="navbar-nav">
+                <li class="nav-item" sec:authorize="hasAuthority('Admin')">
+                    <a th:href="@{/admin-page/users}" class="nav-link">Users</a>
+                </li>
+                <li class="nav-item">
+                    <a th:href="@{/admin-page/categories}" class="nav-link">Categories</a>
+                </li>
+                <li class="nav-item">
+                    <a th:href="@{/admin-page/products}" class="nav-link">Products</a>
+                </li>
+                <li class="nav-item">
+                    <a th:href="@{/admin-page/customers}" class="nav-link">Customers</a>
+                </li>
+                <li class="nav-item">
+                    <a th:href="@{/admin-page/shipping}" class="nav-link">Shipping</a>
+                </li>
+                <li class="nav-item">
+                    <a th:href="@{/admin-page/report}" class="nav-link">Report</a>
+                </li>
+                <li class="nav-item">
+                    <a th:href="@{/admin-page/order}" class="nav-link">Orders</a>
+                </li>
+                <li class="nav-item" sec:authorize="hasAuthority('Admin')">
+                    <a th:href="@{/admin-page/settings}" class="nav-link">Settings</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+<div class="container">
+    <h2>Manege products | [[${pageTitle}]]</h2>
+</div>
+<div class="container">
+    <form th:action="@{/admin-page/products/save}" method="post" style="max-width: 900px; margin: 0 auto"
+          th:object="${product}" enctype="multipart/form-data">
+        <div>
+            <!-- Nav tabs -->
+            <ul class="nav nav-tabs" id="myTab" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#overview" type="button" role="tab">Overview</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" data-bs-toggle="tab" data-bs-target="#description" type="button" role="tab">Description</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link"data-bs-toggle="tab" data-bs-target="#images" type="button" role="tab">Image</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" data-bs-toggle="tab" data-bs-target="#details" type="button" role="tab"  >Details</button>
+                </li>
+            </ul>
+
+            <!-- Tab panes -->
+            <div class="tab-content">
+                <div class="tab-pane active p-3" id="overview" role="tabpanel" >
+                    <div th:replace="admin_product/product_overview :: content" ></div>
+                </div>
+                <div class="tab-pane" id="description" role="tabpanel">
+                    <div th:replace="admin_product/product_descroption :: content" ></div>
+                </div>
+                <div class="tab-pane" id="images" role="tabpanel">Images
+                    <div class="form-group row m-2">
+                        <label class="col-sm-4 col-form-label">Photo:</label>
+                        <div class="col-sm-8">
+                            <input type="file" name="fileImage" id="fileImage" accept="image/png, image/jpeg" />
+                        </div>
+                    </div>
+
+                    <div class="form-group row m-2">
+                        <label class="col-sm-4 col-form-label"></label>
+                        <div class="col-sm-8">
+                            <img id="thumbnail" alt="Logo Preview">
+                        </div>
+                    </div>
+                </div>
+                <div class="tab-pane" id="details" role="tabpanel">
+                    <div th:replace="admin_product/product_details :: content" ></div>
+                    <div>
+                        <input type="button" class="btn btn-secondary" value="Add more detail" onclick="addNextDetail()">
+                    </div>
+                </div>
+            </div>
+
+            <div class="text-center">
+                <input type="submit" value="Save" class="btn btn-primary m-2">
+                <input type="button" value="Cancel" class="btn btn-secondary" id="buttonCancel">
+            </div>
+        </div>
+    </form>
+</div>
+<script type="text/javascript">
+    moduleUrl = "[[@{/admin-page/products}]]";
+    $(document).ready(function () {
+        $("#buttonCancel").on("click", function () {
+            window.location = "[[@{/admin-page/products}]]"
+        });
+    });
+
+</script>
+<script type="text/javascript">
+    function addNextDetail() {
+        htmldetailSection = `    <div class="form-inline">
+                    <label class="m-3">Name:
+                        <input type="text" class="form-control w-200" name="detailNames" maxlength="255">
+                    </label>
+                    <label class="m-3">Value:
+                        <input type="text" class="form-control w-200" name="detailValues" maxlength="255">
+                    </label>
+                </div>`;
+        $("#divProductDetail").append(htmldetailSection);
+    }
+    $(document).ready(function () {
+
+        $("#logoutLink").on("click", function (e) {
+            e.preventDefault();
+            document.logoutForm.submit()
+        });
+        $('#fileImage').change(function () {
+            showImageThumbnail(this);
+        });
+        function showImageThumbnail(fileInput) {
+            file = fileInput.files[0];
+            reader = new FileReader();
+            reader.onload = function (e) {
+                $('#thumbnail').attr('src', e.target.result);
+            };
+            reader.readAsDataURL(file);
+        }
+
+    });
+</script>
+</body>
+</html>
