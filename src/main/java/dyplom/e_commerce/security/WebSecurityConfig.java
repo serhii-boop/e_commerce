@@ -16,6 +16,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @EnableWebSecurity
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
+
     @Bean
     public UserDetailsService userDetailsService() {
         return new AppUserDetailsService();
@@ -41,7 +42,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
-                .antMatchers("/app").permitAll()
+                .antMatchers("/js/**").permitAll()
+                .antMatchers("/app", "/app/**", "/search", "/search/**").permitAll()
                 .antMatchers("/admin-page/users/**").hasAuthority("Admin")
                 .antMatchers("/admin-page/categories/**").hasAnyAuthority("Admin", "Editor")
                 .antMatchers("/admin-page/products/**").hasAnyAuthority("Admin", "Editor", "Customer")
@@ -57,6 +59,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     public void configure(WebSecurity web) throws Exception {
-        web.ignoring().antMatchers("/css/**","/richtext/**", "/font/**", "/images/**", "./category/**", "./product/**", "/webjars/**");
+        web.ignoring().antMatchers("/css/**", "/js/**", "/richtext/**", "/font/**", "/images/**", "./category/**", "./product/**", "/webjars/**");
     }
 }

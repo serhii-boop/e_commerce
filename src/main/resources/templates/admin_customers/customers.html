@@ -65,43 +65,24 @@
     </div>
 </nav>
 <div class="container">
-    <h2>Manege Products</h2>
-    <a th:href="@{/admin-page/products/new}">Create new Product</a>
+    <h2>Manege Customers</h2>
+    <a th:href="@{/admin-page/customers/export/csv}">Export to CSV</a>
     &nbsp;|&nbsp;
-    <a th:href="@{/admin-page/products/export/csv}">Export to CSV</a>
-    &nbsp;|&nbsp;
-    <a th:href="@{/admin-page/products/export/pdf}">Export to PDF</a>
+    <a th:href="@{/admin-page/customers/export/pdf}">Export to PDF</a>
 </div>
 <div th:if="${message != null}" class="alert alert-success text-center">
     [[${message}]]
 </div>
 
 <div class="container">
-    <div>
-        <form th:action="@{/admin-page/products/page/1}" class="d-flex m-3" id="searchForm" style="max-width: 600px">
-            <input type="hidden" name="sortField" th:value="${sortField}" />
-            <input type="hidden" name="sortDir" th:value="${sortDir}" />
-            Category:&nbsp;
-            <select class="form-control" name="categoryId" id="dropdownCategory">
-                <option value="0">All Categories</option>
-
-                <th:block th:each="cat : ${categoryList}">
-                    <option th:value="${cat.id}" th:selected="(${categoryId} == ${cat.id})">[[${cat.name}]]</option>
-                </th:block>
-            </select>
-
-            &nbsp;Filter:&nbsp;
-            <input type="search" name="keyword" th:value="${keyword}" class="form-control" required/>
-            &nbsp;&nbsp;
-            <button type="submit" class="btn btn-primary">
-                <i class="fas fa-search"></i>
-            </button>
-            &nbsp;&nbsp;
-            <button type="button" class="btn btn-secondary" onclick="clearFilter()">
-                <i class="fas fa-eraser"></i>
-            </button>
-        </form>
-    </div>
+    <form th:action="@{'/admin-page/customers/page/1'}" class="d-flex m-3">
+        <input type="hidden" name="sortField" th:value="${sortField}">
+        <input type="hidden" name="sortDir" th:value="${sortDir}">
+        Search: &nbsp;
+        <input type="search" name="keyword" style="max-width: 200px" class="form-control" required>
+        &nbsp;&nbsp;
+        <input type="submit" value="Search" class="btn btn-primary">
+    </form>
 </div>
 
 <div class="container">
@@ -109,28 +90,37 @@
         <thead>
         <tr>
             <th scope="col">Id</th>
-            <th scope="col">Product image</th>
+            <th scope="col">First name</th>
             <th scope="col">
-                <a th:if="${sortField != 'name'}" style="color: black"
-                   th:href="@{'/admin-page/products/page/' + ${currentPage} + '?sortField=name&sortDir=' + ${sortDir} + ${keyword != null ? '&keyword=' + keyword : ''}}">
-                    Product name
+                <a th:if="${sortField != 'lastName'}" style="color: black"
+                   th:href="@{'/admin-page/customers/page/' + ${currentPage} + '?sortField=lastName&sortDir=' + ${sortDir} + ${keyword != null ? '&keyword=' + keyword : ''}}">
+                    Last name
                 </a>
-                <a th:if="${sortField == 'name'}" style="color: black"
-                   th:href="@{'/admin-page/products/page/' + ${currentPage} + '?sortField=name&sortDir=' + ${reverseSortDir} + ${keyword != null ? '&keyword=' + keyword : ''}}">
-                    Product name
+                <a th:if="${sortField == 'lastName'}" style="color: black"
+                   th:href="@{'/admin-page/customers/page/' + ${currentPage} + '?sortField=lastName&sortDir=' + ${reverseSortDir} + ${keyword != null ? '&keyword=' + keyword : ''}}">
+                    Last name
                 </a>
-                <span th:if="${sortField == 'name'}" th:class="${sortDir == 'asc' ? 'fas fa-sort-up' : 'fas fa-sort-down'}"></span>
+                <span th:if="${sortField == 'lastName'}" th:class="${sortDir == 'asc' ? 'fas fa-sort-up' : 'fas fa-sort-down'}"></span>
             </th>
             <th scope="col">
-                Category
+                <a th:if="${sortField != 'city'}" style="color: black"
+                   th:href="@{'/admin-page/customers/page/' + ${currentPage} + '?sortField=city&sortDir=' + ${sortDir} + ${keyword != null ? '&keyword=' + keyword : ''}}">
+                    City
+                </a>
+                <a th:if="${sortField == 'city'}" style="color: black"
+                   th:href="@{'/admin-page/customers/page/' + ${currentPage} + '?sortField=city&sortDir=' + ${reverseSortDir} + ${keyword != null ? '&keyword=' + keyword : ''}}">
+                    City
+                </a>
+                <span th:if="${sortField == 'city'}" th:class="${sortDir == 'asc' ? 'fas fa-sort-up' : 'fas fa-sort-down'}"></span>
             </th>
+            <th scope="col">Email</th>
             <th scope="col">
                 <a th:if="${sortField != 'enabled'}" style="color: black"
-                   th:href="@{'/admin-page/products/page/' + ${currentPage} + '?sortField=enabled&sortDir=' + ${sortDir} + ${keyword != null ? '&keyword=' + keyword : ''}}">
+                   th:href="@{'/admin-page/customers/page/' + ${currentPage} + '?sortField=enabled&sortDir=' + ${sortDir} + ${keyword != null ? '&keyword=' + keyword : ''}}">
                     Status
                 </a>
                 <a th:if="${sortField == 'enabled'}" style="color: black"
-                   th:href="@{'/admin-page/products/page/' + ${currentPage} + '?sortField=enabled&sortDir=' + ${reverseSortDir} + ${keyword != null ? '&keyword=' + keyword : ''}}">
+                   th:href="@{'/admin-page/customers/page/' + ${currentPage} + '?sortField=enabled&sortDir=' + ${reverseSortDir} + ${keyword != null ? '&keyword=' + keyword : ''}}">
                     Status
                 </a>
                 <span th:if="${sortField == 'enabled'}" th:class="${sortDir == 'asc' ? 'fas fa-sort-up' : 'fas fa-sort-down'}"></span>
@@ -138,26 +128,23 @@
         </tr>
         </thead>
         <tbody>
-        <tr th:each="product : ${listProduct}">
-            <th scope="row">[[${product.id}]]</th>
-            <td><img class="col-md-3" th:src="@{${product.logoImagePath}}" style="width: 150px; float: left" ></td>
+        <tr th:each="customer : ${customerList}">
+            <th scope="row">[[${customer.id}]]</th>
+            <td>[[${customer.firstName}]]</td>
+            <td>[[${customer.lastName}]]</td>
+            <td>[[${customer.city}]]</td>
+            <td>[[${customer.email}]]</td>
             <td>
-                <a class="link-detail" th:href="@{'/admin-page/products/detail/' + ${product.id}}"
-                   title="view details about product">
-                [[${product.name}]]</a>&nbsp;
-            </td>
-            <td>[[${product.category.name}]]</td>
-            <td>
-                <a th:if="${product.enabled == true}" class="fa-regular fa-circle-check fa-2x icon-green" style="text-decoration: none"
-                   th:href="@{'/admin-page/products/' + ${product.id} + '/enabled/false'}"></a>
-                <a th:if="${product.enabled == false}" class="fa-solid fa-xmark-circle fa-2x icon-red" style="text-decoration: none"
-                   th:href="@{'/admin-page/products/' + ${product.id} + '/enabled/true'}"></a>
+                <a th:if="${customer.enabled == true}" class="fa-regular fa-circle-check fa-2x icon-green" style="text-decoration: none"
+                   th:href="@{'/admin-page/customers/' + ${customer.id} + '/enabled/false'}"></a>
+                <a th:if="${customer.enabled == false}" class="fa-solid fa-xmark-circle fa-2x icon-red" style="text-decoration: none"
+                   th:href="@{'/admin-page/customers/' + ${customer.id} + '/enabled/true'}"></a>
             </td>
             <td>
-                <a class="fas fa-file-alt fa-2x icon-green link-detail" th:href="@{'/admin-page/products/detail/' + ${product.id}}"
-                    title="view details about product"></a>&nbsp;
-                <a title="Edit user" th:href="@{'/admin-page/products/edit/' + ${product.id}}">Edit</a> &nbsp;
-                <a title="Delete user" th:href="@{'/admin-page/products/delete/' + ${product.id}}">Delete</a>
+                <a class="fas fa-file-alt fa-2x icon-green link-detail" th:href="@{'/admin-page/customers/detail/' + ${customer.id}}"
+                   title="view details about product"></a>&nbsp;
+                <a title="Edit user" th:href="@{'/admin-page/customers/edit/' + ${customer.id}}">Edit</a> &nbsp;
+                <a title="Delete user" th:href="@{'/admin-page/users/delete/' + ${customer.id}}">Delete</a>
             </td>
         </tr>
         </tbody>
@@ -165,33 +152,29 @@
 </div>
 <div class="text-center">
         <span>
-            Showing products - [[${startCount}]] to [[${endCount}]] of [[${totalElements}]]
+            Showing Customers - [[${startCount}]] to [[${endCount}]] of [[${totalElements}]]
         </span>
 </div>
 <div class="text-center">
     <nav aria-label="Page navigation example">
         <ul class="pagination justify-content-center">
             <li class="page-item">
-                <a class="page-link" th:href="@{'/admin-page/products/page/' + ${currentPage - 1}}">Previous</a>
+                <a class="page-link" th:href="@{'/admin-page/customers/page/' + ${currentPage - 1}}">Previous</a>
             </li>
             <li th:class="${currentPage != i ? 'page-item': 'page-item active'} " th:each="i : ${#numbers.sequence(1, totalPages)}">
-                <a class="page-link" th:href="@{'/admin-page/products/page/' + ${i} + '?sortField=enabled&sortDir=' + ${reverseSortDir} + ${keyword != null ? '&keyword=' + keyword : ''}}">[[${i}]]</a>
+                <a class="page-link" th:href="@{'/admin-page/customers/page/' + ${i}}">[[${i}]]</a>
             </li>
             <li class="page-item">
-                <a class="page-link" th:href="@{'/admin-page/products/page/' + ${currentPage + 1}}">Next</a>
+                <a class="page-link" th:href="@{'/admin-page/customers/page/' + ${currentPage + 1}}">Next</a>
             </li>
         </ul>
     </nav>
 </div>
 <script type="text/javascript">
-    moduleUrl = "[[@{/admin-page/products}]]";
     $(document).ready(function () {
         $("#logoutLink").on("click", function (e) {
             e.preventDefault();
             document.logoutForm.submit()
-        });
-        $("#dropdownCategory").on("change", function() {
-            $("#searchForm").submit();
         });
     });
 </script>

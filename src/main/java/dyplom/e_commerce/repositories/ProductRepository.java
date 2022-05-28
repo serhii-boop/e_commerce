@@ -21,5 +21,8 @@ public interface ProductRepository extends PagingAndSortingRepository<Product, I
     Page<Product> findAll(String keyword, Pageable pageable);
 
     @Query("select p from Product  p where p.category.id = ?1")
-    Page<Product> findAllInCategory(Integer categoryId, Pageable pageable);
+    Page<Product> findAllByCategory(Integer categoryId, Pageable pageable);
+
+    @Query(value = "SELECT p FROM Product p WHERE p.enabled = true AND p.name LIKE %?1% or p.shortDescription LIKE %?1% or p.fullDescription LIKE %?1%")
+    Page<Product> search(String keyword, Pageable pageable);
 }

@@ -10,7 +10,7 @@
 </head>
 
 <body>
-<div class="container col-4">
+<div class="container col-4" style="margin-top: 200px">
     <form class="form-signin" method="post" th:action="@{'/admin-page/login'}">
         <div th:if="${param.error}">
             <p class="text-danger">[[${session.SPRING_SECURITY_LAST_EXCEPTION.message}]]</p>

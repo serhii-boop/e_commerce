@@ -6,7 +6,7 @@
     <meta name="viewport"
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Document</title>
+    <title>[[${pageTitle}]]</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" integrity="sha512-KfkfwYDsLkIlwQp6LFnl8zNdLGxu9YAA1QvwINks4PhcElQSvqcyVLLD9aMhXd13uQjoXtEKNosOWaZqXgel0g==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link rel="stylesheet" type="text/css" th:href="@{/css/style.css}">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
@@ -45,27 +45,68 @@
         </ul>
     </div>
 </nav>
-<div class="col-md container">
-    <nav class="navbar navbar-expand-sm">
-        <div class="collapse navbar-collapse" id="searchNavbar">
-            <form class="d-flex m-3" th:action="@{/search}" method="get">
-                <input type="search" name="keyword" class="form-control" th:value="keyword" placeholder="keyword" required>
-                <input type="submit" value="Search" style="margin-left: 5px" class="btn btn-outline-success">
-            </form>
-        </div>
-    </nav>
-</div>
 <div class="container">
-    <h2>Shopping by category</h2>
-    <div class="row card-deck p-4">
-            <div class="col mb-4" th:each="cat: ${listCategory}">
-                <div class="card">
-                    <img th:src="@{${cat.logoImagePath}}" alt="Logo" width="300px">
-                    <div class="card-body">
-                        <a th:href="@{'/app/c/' + ${cat.name}}">[[${cat.name}]]</a>
-                    </div>
+    <div class="col-md container">
+        <nav class="navbar navbar-expand-sm">
+            <div class="collapse navbar-collapse" id="searchNavbar">
+                <form class="d-flex m-3" th:action="@{/search}" method="get">
+                    <input type="search" name="keyword" th:value="keyword" class="form-control" placeholder="keyword" required>
+                    <input type="submit" value="Search" style="margin-left: 5px" class="btn btn-outline-success">
+                </form>
+            </div>
+        </nav>
+    </div>
+    <h2>Products in category</h2>
+    <div th:if="${listCategory != null}">
+        <div class="row">
+            <div class="col">
+                <nav>
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item">
+                            <a th:href="@{/app}">Home</a>
+                        </li>
+                            <li class="breadcrumb-item">
+                                <a th:href="@{'/app/c/' + ${category_name}}">[[${category_name}]]</a>
+                            </li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <th:block th:each="product: ${productList}">
+            <div class="col">
+                <div>
+                    <a th:href="@{'/app/p/' + ${product.id}}">
+                    <img th:src="@{${product.logoImagePath}}" alt="Logo" width="150"><br>
+                    <b>[[${product.name}]]</b>
+                    </a>
+                </div>
+                <div>
+                    <span>UAH - [[${product.price}]]</span>
                 </div>
             </div>
+        </th:block>
+    </div>
+    <div class="text-center">
+        <span>
+            Showing products - [[${startCount}]] to [[${endCount}]] of [[${totalElements}]]
+        </span>
+    </div>
+    <div class="text-center">
+        <nav aria-label="Page navigation example">
+            <ul class="pagination justify-content-center">
+                <li class="page-item">
+                    <a class="page-link" th:href="@{'/app/c/' + ${category_name} + '/page/' + ${currentPage - 1}}">Previous</a>
+                </li>
+                <li th:class="${currentPage != i ? 'page-item': 'page-item active'} " th:each="i : ${#numbers.sequence(1, totalPages)}">
+                    <a class="page-link" th:href="@{'/app/c/' + ${category_name} + '/page/' + ${i}}">[[${i}]]</a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" th:href="@{'/app/c/' + ${category_name} + '/page/' + ${currentPage + 1}}">Next</a>
+                </li>
+            </ul>
+        </nav>
     </div>
 </div>
 <script type="text/javascript">

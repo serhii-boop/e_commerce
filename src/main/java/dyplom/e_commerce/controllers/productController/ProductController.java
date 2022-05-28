@@ -57,20 +57,30 @@ public class ProductController {
         }
         String reverseSortDir = sortDir.equals("asc") ? "desc" : "asc";
 
+        model.addAttribute("currentPage", pageNum);
+        model.addAttribute("totalPages", page.getTotalPages());
+        model.addAttribute("startCount", startCount);
+        model.addAttribute("endCount", endCount);
+        model.addAttribute("totalElements", totalElements);
         model.addAttribute("categoryId", categoryId);
         model.addAttribute("categoryList", categoryList);
         model.addAttribute("keyword", keyword);
-        model.addAttribute("totalPages", page.getTotalPages());
-        model.addAttribute("currentPage", pageNum);
         model.addAttribute("listProduct",productList);
-        model.addAttribute("startCount", startCount);
-        model.addAttribute("endCount", endCount);
         model.addAttribute("sortField", sortField);
         model.addAttribute("sortDir", sortDir);
         model.addAttribute("reverseSortDir", reverseSortDir);
-        model.addAttribute("totalElements", totalElements);
 
         return "admin_product/products";
+    }
+
+    @GetMapping("/app/p/{id}")
+    public String getProductById(@PathVariable("id") int id, Model model) {
+        Product product = productService.getById(id);
+        List<Category> categoryList = categoryService.categoryList();
+        model.addAttribute("product", product);
+        model.addAttribute("categoryList", categoryList);
+        model.addAttribute("pageTitle", product.getCategory().getName());
+        return "app/product_detail";
     }
 
     @GetMapping("/admin-page/products/new")

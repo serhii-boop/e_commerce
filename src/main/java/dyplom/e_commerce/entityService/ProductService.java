@@ -1,6 +1,5 @@
 package dyplom.e_commerce.entityService;
 
-import dyplom.e_commerce.entities.Category;
 import dyplom.e_commerce.entities.Product;
 import dyplom.e_commerce.repositories.ProductRepository;
 import org.springframework.data.domain.Page;
@@ -28,6 +27,23 @@ public class ProductService {
         return (List<Product>) productRepository.findAll();
     }
 
+    public Page<Product> productListByCategory(int pageNum, Integer categoryId){
+        Pageable pageable = PageRequest.of(pageNum - 1, PRODUCT_PER_PAGE);
+        if (categoryId != null && categoryId > 0) {
+            return productRepository.findAllByCategory(categoryId, pageable);
+        }
+        return productRepository.findAll(pageable);
+    }
+
+    public Product getProduct(String name){
+        return productRepository.findByName(name);
+    }
+
+    public Page<Product> search(String keyword, int pageNum) {
+        Pageable pageable = PageRequest.of(pageNum - 1, PRODUCT_PER_PAGE);
+        return productRepository.search(keyword, pageable);
+    }
+
     public Page<Product> listByPage(int pageNum, String sortField, String sortDir, String keyword, Integer categoryId){
         Sort sort = Sort.by(sortField);
         sort = sortDir.equals("asc") ? sort.ascending() : sort.descending();
@@ -36,7 +52,7 @@ public class ProductService {
             return productRepository.findAll(keyword, pageable);
         }
         if (categoryId != null && categoryId > 0) {
-            return productRepository.findAllInCategory(categoryId, pageable);
+            return productRepository.findAllByCategory(categoryId, pageable);
         }
         return productRepository.findAll(pageable);
     }

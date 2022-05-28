@@ -18,6 +18,7 @@ public class MvcConfig implements WebMvcConfigurer {
         String categoryUploadPath = categoryUploadDir.toFile().getAbsolutePath();
         Path productUploadDir = Paths.get("./product");
         String productUploadPath = productUploadDir.toFile().getAbsolutePath();
+        registry.addResourceHandler("/js/**").addResourceLocations("classpath:/static/js/");
         registry.addResourceHandler("/product/**").addResourceLocations("file:/" + productUploadPath + "/");
         registry.addResourceHandler("/category/**").addResourceLocations("file:/" + categoryUploadPath + "/");
         registry.addResourceHandler("/logo/**").addResourceLocations("file:/" + brandUploadPath + "/");

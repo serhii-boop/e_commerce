@@ -45,29 +45,14 @@
         </ul>
     </div>
 </nav>
-<div class="col-md container">
-    <nav class="navbar navbar-expand-sm">
-        <div class="collapse navbar-collapse" id="searchNavbar">
-            <form class="d-flex m-3" th:action="@{/search}" method="get">
-                <input type="search" name="keyword" class="form-control" th:value="keyword" placeholder="keyword" required>
-                <input type="submit" value="Search" style="margin-left: 5px" class="btn btn-outline-success">
-            </form>
-        </div>
-    </nav>
+<div>&nbsp;</div>
+<div class="text-center">
+    <h2>Customer registration</h2>
+    <h4>You have registered successfully</h4>
+    <p>Please check your email to verify your account</p>
+    <a th:href="@{/app/login}">Login here</a>
 </div>
-<div class="container">
-    <h2>Shopping by category</h2>
-    <div class="row card-deck p-4">
-            <div class="col mb-4" th:each="cat: ${listCategory}">
-                <div class="card">
-                    <img th:src="@{${cat.logoImagePath}}" alt="Logo" width="300px">
-                    <div class="card-body">
-                        <a th:href="@{'/app/c/' + ${cat.name}}">[[${cat.name}]]</a>
-                    </div>
-                </div>
-            </div>
-    </div>
-</div>
+
 <script type="text/javascript">
     $(document).ready(function () {
         $("#logoutLink").on("click", function (e) {

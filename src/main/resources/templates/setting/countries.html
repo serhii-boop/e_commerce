@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="https://www.thymeleaf.org.thymeleaf-extras-springsecurity5">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+<div th:fragment="content" th:remove="tag">
+    <div th:fragment="content" th:remove="tag">
+        <div>
+            <input type="button" value="Load country list" id="buttonLoadCountries" class="btn btn-primary">
+        </div>
+        <div>
+            <select style="height: 300px" size="3" class="form-control m-2" id="dropDownCountries">
+            </select>
+            <div class="form-group d-flex">
+                <label class="col-form-label mr-2">Country:</label>
+                <div class="col-md mr-10">
+                    <input type="text" class="form-control" id="fieldCountryName">
+                </div>
+                <label class="col-form-label mr-2">Code:</label>
+                <div class="col-md mr-10">
+                    <input type="text" class="form-control" id="fieldCountryCode">
+                </div>
+                <div class="col-lg-4">
+                    <input type="button" value="Add" class="btn btn-secondary mr-4">
+                    <input type="button" value="Update" class="btn btn-secondary mr-4">
+                    <input type="button" value="Delete" class="btn btn-secondary">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
