@@ -80,8 +80,6 @@ public class CustomerController {
 
         helper.setText(content, true);
         mailSender.send(mimeMessage);
-        System.out.println("to address" + toAddress);
-        System.out.println(verifyUrl);
     }
 
     @GetMapping("/app/verify")
@@ -185,4 +183,19 @@ public class CustomerController {
         CustomerPdfExporter exporter = new CustomerPdfExporter();
         exporter.export(customerList, response);
     }
+
+    @GetMapping("/app/account-details")
+    public String viewAccountDetails(Model model, HttpServletRequest request) {
+        String email = request.getUserPrincipal().getName();
+        Customer customer = customerRepository.findByEmail(email);
+        model.addAttribute("customer", customer);
+        return "admin_customers/account_form";
+    }
+
+    @PostMapping("app/update_account_details")
+    public String updateAccount(Model model, Customer customer) {
+        customerService.update(customer);
+        return "redirect:/app/account-details";
+    }
+
 }

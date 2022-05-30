@@ -62,17 +62,14 @@
     </div>
 </nav>
 <div class="container">
-    <h2>Manege Customers</h2>
-    <a th:href="@{/admin-page/customers/export/csv}">Export to CSV</a>
-    &nbsp;|&nbsp;
-    <a th:href="@{/admin-page/customers/export/pdf}">Export to PDF</a>
+    <h2>Manege Orders</h2>
 </div>
 <div th:if="${message != null}" class="alert alert-success text-center">
     [[${message}]]
 </div>
 
 <div class="container">
-    <form th:action="@{'/admin-page/customers/page/1'}" class="d-flex m-3">
+    <form th:action="@{'/admin-page/order/page/1'}" class="d-flex m-3">
         <input type="hidden" name="sortField" th:value="${sortField}">
         <input type="hidden" name="sortDir" th:value="${sortDir}">
         Search: &nbsp;
@@ -87,61 +84,62 @@
         <thead>
         <tr>
             <th scope="col">Id</th>
-            <th scope="col">First name</th>
             <th scope="col">
                 <a th:if="${sortField != 'lastName'}" style="color: black"
-                   th:href="@{'/admin-page/customers/page/' + ${currentPage} + '?sortField=lastName&sortDir=' + ${sortDir} + ${keyword != null ? '&keyword=' + keyword : ''}}">
-                    Last name
+                   th:href="@{'/admin-page/order/page/' + ${currentPage} + '?sortField=lastName&sortDir=' + ${sortDir} + ${keyword != null ? '&keyword=' + keyword : ''}}">
+                    Customer
                 </a>
                 <a th:if="${sortField == 'lastName'}" style="color: black"
-                   th:href="@{'/admin-page/customers/page/' + ${currentPage} + '?sortField=lastName&sortDir=' + ${reverseSortDir} + ${keyword != null ? '&keyword=' + keyword : ''}}">
-                    Last name
+                   th:href="@{'/admin-page/order/page/' + ${currentPage} + '?sortField=lastName&sortDir=' + ${reverseSortDir} + ${keyword != null ? '&keyword=' + keyword : ''}}">
+                    Customer
                 </a>
                 <span th:if="${sortField == 'lastName'}" th:class="${sortDir == 'asc' ? 'fas fa-sort-up' : 'fas fa-sort-down'}"></span>
             </th>
             <th scope="col">
-                <a th:if="${sortField != 'city'}" style="color: black"
-                   th:href="@{'/admin-page/customers/page/' + ${currentPage} + '?sortField=city&sortDir=' + ${sortDir} + ${keyword != null ? '&keyword=' + keyword : ''}}">
-                    City
+                <a th:if="${sortField != 'total'}" style="color: black"
+                   th:href="@{'/admin-page/order/page/' + ${currentPage} + '?sortField=total&sortDir=' + ${sortDir} + ${keyword != null ? '&keyword=' + keyword : ''}}">
+                    Total
                 </a>
-                <a th:if="${sortField == 'city'}" style="color: black"
-                   th:href="@{'/admin-page/customers/page/' + ${currentPage} + '?sortField=city&sortDir=' + ${reverseSortDir} + ${keyword != null ? '&keyword=' + keyword : ''}}">
-                    City
+                <a th:if="${sortField == 'total'}" style="color: black"
+                   th:href="@{'/admin-page/order/page/' + ${currentPage} + '?sortField=total&sortDir=' + ${reverseSortDir} + ${keyword != null ? '&keyword=' + keyword : ''}}">
+                    Total
                 </a>
-                <span th:if="${sortField == 'city'}" th:class="${sortDir == 'asc' ? 'fas fa-sort-up' : 'fas fa-sort-down'}"></span>
+                <span th:if="${sortField == 'total'}" th:class="${sortDir == 'asc' ? 'fas fa-sort-up' : 'fas fa-sort-down'}"></span>
             </th>
-            <th scope="col">Email</th>
             <th scope="col">
-                <a th:if="${sortField != 'enabled'}" style="color: black"
-                   th:href="@{'/admin-page/customers/page/' + ${currentPage} + '?sortField=enabled&sortDir=' + ${sortDir} + ${keyword != null ? '&keyword=' + keyword : ''}}">
-                    Status
+                <a th:if="${sortField != 'orderTime'}" style="color: black"
+                   th:href="@{'/admin-page/order/page/' + ${currentPage} + '?sortField=orderTime&sortDir=' + ${sortDir} + ${keyword != null ? '&keyword=' + keyword : ''}}">
+                    Order date
                 </a>
-                <a th:if="${sortField == 'enabled'}" style="color: black"
-                   th:href="@{'/admin-page/customers/page/' + ${currentPage} + '?sortField=enabled&sortDir=' + ${reverseSortDir} + ${keyword != null ? '&keyword=' + keyword : ''}}">
-                    Status
+                <a th:if="${sortField == 'orderTime'}" style="color: black"
+                   th:href="@{'/admin-page/order/page/' + ${currentPage} + '?sortField=orderTime&sortDir=' + ${reverseSortDir} + ${keyword != null ? '&keyword=' + keyword : ''}}">
+                    Order date
                 </a>
-                <span th:if="${sortField == 'enabled'}" th:class="${sortDir == 'asc' ? 'fas fa-sort-up' : 'fas fa-sort-down'}"></span>
+                <span th:if="${sortField == 'orderTime'}" th:class="${sortDir == 'asc' ? 'fas fa-sort-up' : 'fas fa-sort-down'}"></span>
+            </th>
+            <th scope="col">
+                Destination
+            </th>
+            <th scope="col">
+                Status
             </th>
         </tr>
         </thead>
         <tbody>
-        <tr th:each="customer : ${customerList}">
-            <th scope="row">[[${customer.id}]]</th>
-            <td>[[${customer.firstName}]]</td>
-            <td>[[${customer.lastName}]]</td>
-            <td>[[${customer.city}]]</td>
-            <td>[[${customer.email}]]</td>
+        <tr th:each="order : ${orderList}">
+            <th scope="row">[[${order.id}]]</th>
+            <td><a th:href="@{'/admin-page/customers/detail/' + ${order.customer.id}}">[[${order.firstName}]] [[${order.lastName}]]</a></td>
+            <th>[[${order.total}]] - UAH</th>
+            <td><span th:text="${#dates.format(order.orderTime, 'yyyy-MM-dd HH:mm:ss')}"></span></td>
+            <td>[[${order.city}]], [[${order.country}]]</td>
             <td>
-                <a th:if="${customer.enabled == true}" class="fa-regular fa-circle-check fa-2x icon-green" style="text-decoration: none"
-                   th:href="@{'/admin-page/customers/' + ${customer.id} + '/enabled/false'}"></a>
-                <a th:if="${customer.enabled == false}" class="fa-solid fa-xmark-circle fa-2x icon-red" style="text-decoration: none"
-                   th:href="@{'/admin-page/customers/' + ${customer.id} + '/enabled/true'}"></a>
+                [[${order.status}]]
             </td>
             <td>
-                <a class="fas fa-file-alt fa-2x icon-green link-detail" th:href="@{'/admin-page/customers/detail/' + ${customer.id}}"
+                <a class="fas fa-file-alt fa-2x icon-green link-detail" th:href="@{'/admin-page/order/detail/' + ${order.id}}"
                    title="view details about product"></a>&nbsp;
-                <a title="Edit user" th:href="@{'/admin-page/customers/edit/' + ${customer.id}}">Edit</a> &nbsp;
-                <a title="Delete user" th:href="@{'/admin-page/users/delete/' + ${customer.id}}">Delete</a>
+                <a title="Edit order" th:href="@{'/admin-page/order/edit/' + ${order.id}}">Edit</a> &nbsp;
+                <a title="Delete order" th:href="@{'/admin-page/order/delete/' + ${order.id}}">Delete</a>
             </td>
         </tr>
         </tbody>
@@ -149,20 +147,20 @@
 </div>
 <div class="text-center">
         <span>
-            Showing Customers - [[${startCount}]] to [[${endCount}]] of [[${totalElements}]]
+            Showing Orders - [[${startCount}]] to [[${endCount}]] of [[${totalElements}]]
         </span>
 </div>
 <div class="text-center">
     <nav aria-label="Page navigation example">
         <ul class="pagination justify-content-center">
             <li class="page-item">
-                <a class="page-link" th:href="@{'/admin-page/customers/page/' + ${currentPage - 1}}">Previous</a>
+                <a class="page-link" th:href="@{'/admin-page/order/page/' + ${currentPage - 1}}">Previous</a>
             </li>
             <li th:class="${currentPage != i ? 'page-item': 'page-item active'} " th:each="i : ${#numbers.sequence(1, totalPages)}">
-                <a class="page-link" th:href="@{'/admin-page/customers/page/' + ${i}}">[[${i}]]</a>
+                <a class="page-link" th:href="@{'/admin-page/order/page/' + ${i}}">[[${i}]]</a>
             </li>
             <li class="page-item">
-                <a class="page-link" th:href="@{'/admin-page/customers/page/' + ${currentPage + 1}}">Next</a>
+                <a class="page-link" th:href="@{'/admin-page/order/page/' + ${currentPage + 1}}">Next</a>
             </li>
         </ul>
     </nav>

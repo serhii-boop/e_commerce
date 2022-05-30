@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="https://www.thymeleaf.org.thymeleaf-extras-springsecurity5">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+<div th:fragment="content">
+    <div class="col-sm-8">
+        <th:block th:each="item: ${order.orderDetails}">
+            <div class="row border rounded" style="margin-bottom: 5px" th:with="product = ${item.product}">
+                <div class="col-3">
+                    <img th:src="@{${product.logoImagePath}}" width="150px">
+                </div>
+                <div class="col-6">
+                    <div>
+                        <a><b th:text="${product.name}"></b></a>
+                    </div>
+                    <div>&nbsp;</div>
+                    <div class="d-flex">
+                        <span>Product cost: [[${product.price}]] - UAH</span>
+                    </div>
+                    <div class="d-flex">
+                        <span>Quantity: [[${item.quantity}]]</span>
+                    </div>
+                    <div class="d-flex">
+                        <span>Total price: [[${item.subtotal}]]</span>
+                    </div>
+                </div>
+            </div>
+        </th:block>
+    </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,267 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="https://www.thymeleaf.org.thymeleaf-extras-springsecurity5">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" integrity="sha512-KfkfwYDsLkIlwQp6LFnl8zNdLGxu9YAA1QvwINks4PhcElQSvqcyVLLD9aMhXd13uQjoXtEKNosOWaZqXgel0g==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" type="text/css" th:href="@{/css/style.css}">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js" ></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.min.js" integrity="sha384-Atwg2Pkwv9vp0ygtn1JAojH0nYbwNJLPhwyoVbhoPwBhjQPR5VtM2+xf0Uwh9KtT" crossorigin="anonymous"></script>
+    <link href="https://cdn.jsdelivr.net/npm/boxicons@latest/css/boxicons.min.css" rel="stylesheet">
+
+</head>
+<body>
+<form th:action="@{'/logout'}" method="post" th:hidden="true" name="logoutForm">
+    <input type="submit">
+</form>
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="container" th:switch="${#authentication}? ${#authorization.expression('isAuthenticated()')} : ${false}">
+        <a th:href="@{/app}" class="navbar-brand"><h1>Logo</h1></a>
+        <span th:case="${false}">
+            <ul class="navbar-nav" >
+                <li class="nav-item">
+                    <a href="" class="nav-link">Careers</a>
+                </li>
+                <li class="nav-item">
+                    <a href="" class="nav-link">Payment</a>
+                </li>
+                <li class="nav-item">
+                    <a href="" class="nav-link">Shipping &amp; Delivery</a>
+                </li>
+                <li class="nav-item">
+                    <a th:href="@{/app/login}" class="nav-link">Login</a>
+                </li>
+                <li class="nav-item">
+                    <a th:href="@{/app/register}" class="nav-link">Register</a>
+                </li>
+                <li class="nav-item">
+                    <a href="" class="nav-link">Contact</a>
+                </li>
+            </ul>
+        </span>
+        <span th:case="${true}">
+            <ul class="navbar-nav" >
+                <li class="nav-item">
+                    <a href="" class="nav-link">Careers</a>
+                </li>
+                <li class="nav-item">
+                    <a href="" class="nav-link">Payment</a>
+                </li>
+                <li class="nav-item">
+                    <a href="" class="nav-link">Shipping &amp; Delivery</a>
+                </li>
+                <li class="nav-item">
+                    <a href="" class="nav-link">Contact</a>
+                </li>
+                <li class="nav-item">
+                    <a th:href="@{/app/cart}" class="nav-link">Cart</a>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" sec:authentication="principal.username" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                        <li><a class="dropdown-item" th:href="@{'/app/account-details'}">Account</a></li>
+                        <li><a class="dropdown-item" id="logoutLink" href="">Logout</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </span>
+    </div>
+</nav>
+<div class="col-md container">
+    <nav class="navbar navbar-expand-sm">
+        <div class="collapse navbar-collapse" id="searchNavbar">
+            <form class="d-flex m-3" th:action="@{/search}" method="get">
+                <input type="search" name="keyword" class="form-control" th:value="keyword" placeholder="keyword" required>
+                <input type="submit" value="Search" style="margin-left: 5px" class="btn btn-outline-success">
+            </form>
+        </div>
+    </nav>
+</div>
+<div class="container">
+    <h2>Your shopping cart</h2>
+    <div class="row">
+        <div class="col-sm-8">
+            <th:block th:each="item, status: ${cartItems}">
+                <div class="row border rounded" style="margin-bottom: 5px" th:id="'row' + ${status.count}">
+                    <div class="col-1">
+                        <div class="divCount">[[${status.count}]]</div>
+                        <div>
+                            <a class="fas fa-trash icon-trash linkRemove" th:href="@{'/app/cart/remove/' + ${item.product.id}}"
+                            th:rowNumber="${status.count}"></a>
+                        </div>
+                    </div>
+                    <div class="col-3">
+                        <img th:src="@{${item.product.logoImagePath}}" width="150px">
+                    </div>
+                    <div class="col-6">
+                        <div>
+                            <a th:href="@{'/app/p/' + ${item.product.id}}" target="_blank"><b th:text="${item.product.name}"></b></a>
+                        </div>
+                        <div>&nbsp;</div>
+                        <div th:replace="cart/quantity_control :: quantity_control(${item.quantity}, ${item.product.id})"></div>
+                        <div class="d-flex">
+                            <span>[[${item.product.price}]] - UAH</span>
+                            <p>,<b>Total price: </b><b class="subtotal" th:id="'subtotal' + ${item.product.id}">[[${item.subTotal}]]</b><b> - UAH</b></p>
+                        </div>
+                    </div>
+                </div>
+            </th:block>
+        </div>
+        <div class="col-sm-4 ml-15" th:unless="${#lists.isEmpty(cartItems)}" id="sectionTotal">
+            <div>
+                <span class="h3">Estimated Total</span>
+            </div>
+            <div class="mt-2">
+                <b>Total price: </b>
+                <b id="total" th:id="total" class="total">[[${totalSum}]]</b>
+                <b> - UAH</b>
+            </div>
+            <div class="mt-2">
+                <button class="btn btn-success">Check out</button>
+            </div>
+        </div>
+        <div id="sectionEmptyCartMessage" th:class="'text-center' + ${#lists.isEmpty(cartItems) ? '' : 'd-none'}" th:if="${#lists.isEmpty(cartItems)}">
+            <h3>You have not chosen any product yet</h3>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $("#logoutLink").on("click", function (e) {
+            e.preventDefault();
+            document.logoutForm.submit()
+        });
+    });
+</script>
+<script type="text/javascript">
+    let csrfHeaderName = "[[${_csrf.headerName}]]";
+    let csrfValue = "[[${_csrf.token}]]";
+    $(document).ready(function() {
+        $(".linkMinus").on("click", function(evt) {
+            evt.preventDefault();
+            decreaseQuantity($(this));
+        });
+
+        $(".linkPlus").on("click", function(evt) {
+            evt.preventDefault();
+            increaseQuantity($(this));
+        });
+
+        $(".linkRemove").on("click", function(evt) {
+            evt.preventDefault();
+            removeProduct($(this));
+        });
+    });
+
+    function decreaseQuantity(link) {
+        productId = link.attr("pid");
+        quantityInput = $("#quantity" + productId);
+        newQuantity = parseInt(quantityInput.val()) - 1;
+
+        if (newQuantity > 0) {
+            quantityInput.val(newQuantity);
+            updateQuantity(productId, newQuantity);
+        } else {
+            alert('Minimum quantity is 1');
+        }
+    }
+
+    function increaseQuantity(link) {
+        productId = link.attr("pid");
+        quantityInput = $("#quantity" + productId);
+        newQuantity = parseInt(quantityInput.val()) + 1;
+
+        if (newQuantity <= 100) {
+            quantityInput.val(newQuantity);
+            updateQuantity(productId, newQuantity);
+        } else {
+            alert('Maximum quantity is 100');
+        }
+    }
+
+    function updateQuantity(productId, quantity) {
+        url =  "/app/cart/update/" + productId + "/" + quantity;
+
+        $.ajax({
+            type: "POST",
+            url: url,
+            beforeSend: function(xhr) {
+                xhr.setRequestHeader(csrfHeaderName, csrfValue);
+            }
+        }).done(function(updatedSubtotal) {
+            updateSubtotal(updatedSubtotal, productId);
+            updateTotal();
+        }).fail(function() {
+            alert("Error while updating product quantity.");
+        });
+    }
+
+    function updateSubtotal(updatedSubtotal, productId) {
+        $("#subtotal" + productId).text(updatedSubtotal);
+    }
+
+    function updateTotal() {
+        total = 0.0;
+        productCount = 0;
+
+        $(".subtotal").each(function(index, element) {
+            productCount++;
+            total += parseFloat(element.innerHTML);
+        });
+
+        if (productCount < 1) {
+            showEmptyShoppingCart();
+        } else {
+            $("#total").text(formatCurrency(total));
+        }
+
+    }
+
+    function showEmptyShoppingCart() {
+        $("#sectionTotal").hide();
+        $("#sectionEmptyCartMessage").removeClass("d-none");
+    }
+
+    function removeProduct(link) {
+        url = link.attr("href");
+
+        $.ajax({
+            type: "DELETE",
+            url: url,
+            beforeSend: function(xhr) {
+                xhr.setRequestHeader(csrfHeaderName, csrfValue);
+            }
+        }).done(function(response) {
+            rowNumber = link.attr("rowNumber");
+            removeProductHTML(rowNumber);
+            updateTotal();
+            updateCountNumbers();
+
+            alert(response);
+
+        }).fail(function() {
+            alert("Error while removing product.");
+        });
+    }
+
+    function removeProductHTML(rowNumber) {
+        $("#row" + rowNumber).remove();
+        $("#blankLine" + rowNumber).remove();
+    }
+
+    function updateCountNumbers() {
+        $(".divCount").each(function(index, element) {
+            element.innerHTML = "" + (index + 1);
+        });
+    }
+</script>
+</body>
+</html>

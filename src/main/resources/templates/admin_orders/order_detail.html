@@ -21,79 +21,79 @@
     <input type="submit">
 </form>
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
-    <div class="container" th:switch="${#authentication}? ${#authorization.expression('isAuthenticated()')} : ${false}">
-        <a th:href="@{/app}" class="navbar-brand"><h1>Logo</h1></a>
-        <span th:case="${false}">
-            <ul class="navbar-nav" >
-                <li class="nav-item">
-                    <a href="" class="nav-link">Payment</a>
+    <div class="container">
+        <a href="@{/}" class="navbar-brand"><h1>Logo</h1></a>
+        <div class="collapse navbar-collapse">
+            <ul class="navbar-nav">
+                <li class="nav-item" sec:authorize="hasAuthority('Admin')">
+                    <a th:href="@{/admin-page/users}" class="nav-link">Users</a>
                 </li>
                 <li class="nav-item">
-                    <a href="" class="nav-link">Shipping &amp; Delivery</a>
+                    <a th:href="@{/admin-page/categories}" class="nav-link">Categories</a>
                 </li>
                 <li class="nav-item">
-                    <a th:href="@{/app/login}" class="nav-link">Login</a>
+                    <a th:href="@{/admin-page/products}" class="nav-link">Products</a>
                 </li>
                 <li class="nav-item">
-                    <a th:href="@{/app/register}" class="nav-link">Register</a>
+                    <a th:href="@{/admin-page/customers}" class="nav-link">Customers</a>
                 </li>
                 <li class="nav-item">
-                    <a href="" class="nav-link">Contact</a>
-                </li>
-            </ul>
-        </span>
-        <span th:case="${true}">
-            <ul class="navbar-nav" >
-                <li class="nav-item">
-                    <a href="" class="nav-link">Payment</a>
+                    <a th:href="@{/admin-page/report}" class="nav-link">Report</a>
                 </li>
                 <li class="nav-item">
-                    <a href="" class="nav-link">Shipping &amp; Delivery</a>
+                    <a th:href="@{/admin-page/order}" class="nav-link">Orders</a>
                 </li>
-                <li class="nav-item">
-                    <a href="" class="nav-link">Contact</a>
+                <li class="nav-item" sec:authorize="hasAuthority('Admin')">
+                    <a th:href="@{/admin-page/settings}" class="nav-link">Settings</a>
                 </li>
-                <li class="nav-item">
-                    <a th:href="@{/app/address}" class="nav-link">Address book</a>
-                </li>
-                <li class="nav-item">
-                    <a th:href="@{/app/cart}" class="nav-link">Cart</a>
+                <li class="nav-item" style="margin-left: 50px">
+                    <span class="fas fa-user fa-2x"></span>
                 </li>
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" sec:authentication="principal.username" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                     </a>
                     <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                        <li><a class="dropdown-item" th:href="@{'/app/account-details'}">Account</a></li>
+                        <li><a class="dropdown-item" th:href="@{'/admin-page/account'}">Account</a></li>
                         <li><a class="dropdown-item" id="logoutLink" href="">Logout</a></li>
                     </ul>
                 </li>
             </ul>
-        </span>
+        </div>
     </div>
 </nav>
-<div class="col-md container">
-    <nav class="navbar navbar-expand-sm">
-        <div class="collapse navbar-collapse" id="searchNavbar">
-            <form class="d-flex m-3" th:action="@{/search}" method="get">
-                <input type="search" name="keyword" class="form-control" th:value="keyword" placeholder="keyword" required>
-                <input type="submit" value="Search" style="margin-left: 5px" class="btn btn-outline-success">
-            </form>
-        </div>
-    </nav>
+<div class="container">
+    <h2>Order detail</h2>
 </div>
 <div class="container">
-    <h2>Shopping by category</h2>
-    <div class="row card-deck p-4">
-            <div class="col mb-4" th:each="cat: ${listCategory}">
-                <div class="card">
-                    <img th:src="@{${cat.logoImagePath}}" alt="Logo" width="300px">
-                    <div class="card-body">
-                        <a th:href="@{'/app/c/' + ${cat.name}}">[[${cat.name}]]</a>
-                    </div>
-                </div>
+    <div>
+        <!-- Nav tabs -->
+        <ul class="nav nav-tabs" id="settingTab" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#overview" type="button" role="tab">Overview</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" data-bs-toggle="tab" data-bs-target="#products" type="button" role="tab">Products</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" data-bs-toggle="tab" data-bs-target="#shipping" type="button" role="tab" >Shipping</button>
+            </li>
+        </ul>
+
+        <!-- Tab panes -->
+        <div class="tab-content">
+            <div class="tab-pane active p-3" id="overview" role="tabpanel" >
+                <div th:replace="admin_orders/overview :: content"></div>
             </div>
+            <div class="tab-pane p-3" id="products" role="tabpanel">
+                <div th:replace="admin_orders/products :: content"></div>
+            </div>
+            <div class="tab-pane p-3" id="shipping" role="tabpanel">
+                <div th:replace="admin_orders/shipping :: content"></div>
+            </div>
+        </div>
     </div>
 </div>
+
 <script type="text/javascript">
     $(document).ready(function () {
         $("#logoutLink").on("click", function (e) {

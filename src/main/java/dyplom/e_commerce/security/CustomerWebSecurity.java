@@ -16,30 +16,12 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Configuration
 @EnableWebSecurity
-@Order(Ordered.HIGHEST_PRECEDENCE)
-public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
-
-
-    @Bean
-    public UserDetailsService userDetailsService() {
-        return new AppUserDetailsService();
-    }
+//@Order(Ordered.HIGHEST_PRECEDENCE)
+public class CustomerWebSecurity extends WebSecurityConfigurerAdapter {
 
     @Bean
-    public PasswordEncoder passwordEncoder() {
+    public PasswordEncoder passwordEncoder1() {
         return new BCryptPasswordEncoder();
-    }
-    @Bean
-    public DaoAuthenticationProvider authenticationProvider() {
-        DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
-        authProvider.setUserDetailsService(userDetailsService());
-        authProvider.setPasswordEncoder(passwordEncoder());
-        return authProvider;
-    }
-
-    @Override
-    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.authenticationProvider(authenticationProvider());
     }
 
     @Override
@@ -47,15 +29,16 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         http.authorizeRequests()
                 .antMatchers("/js/**").permitAll()
                 .antMatchers("/app", "/app/**", "/search", "/search/**").permitAll()
-                .antMatchers("/admin-page/users/**").hasAuthority("Admin")
-                .antMatchers("/admin-page/categories/**").hasAnyAuthority("Admin", "Editor")
-                .antMatchers("/admin-page/products/**").hasAnyAuthority("Admin", "Editor", "Customer")
-                .anyRequest()
-                .authenticated()
+                .antMatchers("/app/account-details", "/app/cart", "/app/address", "/app/address/**").authenticated()
+                .antMatchers("/admin-page").hasAnyAuthority("Admin", "Editor")
+                .antMatchers("/admin-page/**").hasAnyAuthority("Admin", "Editor")
+                .antMatchers("/app/customer").authenticated()
+                .anyRequest().permitAll()
                 .and()
                 .formLogin()
-                .loginPage("/admin-page/login")
+                .loginPage("/app/login")
                 .permitAll()
+                .defaultSuccessUrl("/app")
                 .and()
                 .logout().permitAll();
     }
@@ -63,5 +46,23 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     public void configure(WebSecurity web) throws Exception {
         web.ignoring().antMatchers("/css/**", "/js/**", "/richtext/**", "/font/**", "/images/**", "./category/**", "./product/**", "/webjars/**");
+    }
+
+    @Bean
+    public UserDetailsService customerDetailsService() {
+        return new CustomerUserDetailsServer();
+    }
+
+    @Override
+    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+        auth.authenticationProvider(authenticationProvider1());
+    }
+
+    @Bean
+    public DaoAuthenticationProvider authenticationProvider1() {
+        DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
+        authProvider.setUserDetailsService(customerDetailsService());
+        authProvider.setPasswordEncoder(passwordEncoder1());
+        return authProvider;
     }
 }

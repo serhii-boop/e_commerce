@@ -21,28 +21,54 @@
     <input type="submit">
 </form>
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
-    <div class="container">
+    <div class="container" th:switch="${#authentication}? ${#authorization.expression('isAuthenticated()')} : ${false}">
         <a th:href="@{/app}" class="navbar-brand"><h1>Logo</h1></a>
-        <ul class="navbar-nav">
-            <li class="nav-item">
-                <a href="" class="nav-link">Careers</a>
-            </li>
-            <li class="nav-item">
-                <a href="" class="nav-link">Payment</a>
-            </li>
-            <li class="nav-item">
-                <a href="" class="nav-link">Shipping &amp; Delivery</a>
-            </li>
-            <li class="nav-item">
-                <a href="" class="nav-link">Login</a>
-            </li>
-            <li class="nav-item">
-                <a th:href="@{/app/register}" class="nav-link">Register</a>
-            </li>
-            <li class="nav-item">
-                <a href="" class="nav-link">Contact</a>
-            </li>
-        </ul>
+        <span th:case="${false}">
+            <ul class="navbar-nav" >
+                <li class="nav-item">
+                    <a href="" class="nav-link">Careers</a>
+                </li>
+                <li class="nav-item">
+                    <a href="" class="nav-link">Payment</a>
+                </li>
+                <li class="nav-item">
+                    <a href="" class="nav-link">Shipping &amp; Delivery</a>
+                </li>
+                <li class="nav-item">
+                    <a th:href="@{/app/login}" class="nav-link">Login</a>
+                </li>
+                <li class="nav-item">
+                    <a th:href="@{/app/register}" class="nav-link">Register</a>
+                </li>
+                <li class="nav-item">
+                    <a href="" class="nav-link">Contact</a>
+                </li>
+            </ul>
+        </span>
+        <span th:case="${true}">
+            <ul class="navbar-nav" >
+                <li class="nav-item">
+                    <a href="" class="nav-link">Careers</a>
+                </li>
+                <li class="nav-item">
+                    <a href="" class="nav-link">Payment</a>
+                </li>
+                <li class="nav-item">
+                    <a href="" class="nav-link">Shipping &amp; Delivery</a>
+                </li>
+                <li class="nav-item">
+                    <a href="" class="nav-link">Contact</a>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" sec:authentication="principal.username" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                        <li><a class="dropdown-item" th:href="@{'/app/account-details'}">Account</a></li>
+                        <li><a class="dropdown-item" id="logoutLink" href="">Logout</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </span>
     </div>
 </nav>
 <div class="col-md container">

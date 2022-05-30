@@ -82,16 +82,68 @@
     </nav>
 </div>
 <div class="container">
-    <h2>Shopping by category</h2>
-    <div class="row card-deck p-4">
-            <div class="col mb-4" th:each="cat: ${listCategory}">
-                <div class="card">
-                    <img th:src="@{${cat.logoImagePath}}" alt="Logo" width="300px">
+    <h2>Your address book</h2>
+    <div>
+        <a th:href="@{/app/address/new}" class="h4">Add new address</a>
+    </div>
+    <div th:if="${message != null}" class="alert alert-success text-center">
+        [[${message}]]
+    </div>
+    <div class="row m-1">
+        <div class="col-sm-6 mt-2">
+            <div class="card" th:classappend="${usePrimary ? 'bg-info' : ''}">
+                <div class="card-header">
+                    <div class="row">
+                        <div class="col">
+                            <b>Your main address</b>
+                            <th:block th:unless="${usePrimary}">
+                                <a th:href="@{'/app/address/default/0'}">[Set as default]</a>
+                            </th:block>
+                            <th:block th:if="${usePrimary}">
+                                <span>[Default]</span>
+                            </th:block>
+                        </div>
+                        <div class="col">
+                            <div class="float-right">
+                                <a class="fas fa-edit icon-dark" th:href="@{/app/account-details}"></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <p>[[${customer.address}]]</p>
+                </div>
+            </div>
+        </div>
+        <th:block th:each="address, status: ${addressList}">
+            <div class="col-sm-6 mt-2">
+                <div class="card" th:classappend="${address.isDefaultForShipping() ? 'bg-info' : ''}">
+                    <div class="card-header">
+                        <div class="row">
+                            <div class="col">
+                                <b>Address #[[${status.count + 1}]]</b>
+                                <th:block th:unless="${address.isDefaultForShipping()}">
+                                    <a th:href="@{'/app/address/default/' + ${address.id}}">[Set as default]</a>
+                                </th:block>
+                                <th:block th:if="${address.isDefaultForShipping()}">
+                                    <span>[Default]</span>
+                                </th:block>
+                            </div>
+                            <div class="col">
+                                <div class="float-right">
+                                    <a class="fas fa-edit icon-dark" th:href="@{'/app/address/edit/' + ${address.id}}"></a>
+                                    &nbsp;
+                                    <a class="fas fa-trash icon-dark" th:entityId="${address.id}" th:href="@{'/app/address/delete/' + ${address.id}}"></a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                     <div class="card-body">
-                        <a th:href="@{'/app/c/' + ${cat.name}}">[[${cat.name}]]</a>
+                        <p>[[${address.toString}]]</p>
                     </div>
                 </div>
             </div>
+        </th:block>
     </div>
 </div>
 <script type="text/javascript">

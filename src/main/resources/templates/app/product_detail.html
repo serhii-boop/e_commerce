@@ -21,28 +21,54 @@
     <input type="submit">
 </form>
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
-    <div class="container">
+    <div class="container" th:switch="${#authentication}? ${#authorization.expression('isAuthenticated()')} : ${false}">
         <a th:href="@{/app}" class="navbar-brand"><h1>Logo</h1></a>
-        <ul class="navbar-nav">
-            <li class="nav-item">
-                <a href="" class="nav-link">Careers</a>
-            </li>
-            <li class="nav-item">
-                <a href="" class="nav-link">Payment</a>
-            </li>
-            <li class="nav-item">
-                <a href="" class="nav-link">Shipping &amp; Delivery</a>
-            </li>
-            <li class="nav-item">
-                <a href="" class="nav-link">Login</a>
-            </li>
-            <li class="nav-item">
-                <a th:href="@{/app/register}" class="nav-link">Register</a>
-            </li>
-            <li class="nav-item">
-                <a href="" class="nav-link">Contact</a>
-            </li>
-        </ul>
+        <span th:case="${false}">
+            <ul class="navbar-nav" >
+                <li class="nav-item">
+                    <a href="" class="nav-link">Careers</a>
+                </li>
+                <li class="nav-item">
+                    <a href="" class="nav-link">Payment</a>
+                </li>
+                <li class="nav-item">
+                    <a href="" class="nav-link">Shipping &amp; Delivery</a>
+                </li>
+                <li class="nav-item">
+                    <a th:href="@{/app/login}" class="nav-link">Login</a>
+                </li>
+                <li class="nav-item">
+                    <a th:href="@{/app/register}" class="nav-link">Register</a>
+                </li>
+                <li class="nav-item">
+                    <a href="" class="nav-link">Contact</a>
+                </li>
+            </ul>
+        </span>
+        <span th:case="${true}">
+            <ul class="navbar-nav" >
+                <li class="nav-item">
+                    <a href="" class="nav-link">Careers</a>
+                </li>
+                <li class="nav-item">
+                    <a href="" class="nav-link">Payment</a>
+                </li>
+                <li class="nav-item">
+                    <a href="" class="nav-link">Shipping &amp; Delivery</a>
+                </li>
+                <li class="nav-item">
+                    <a href="" class="nav-link">Contact</a>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" sec:authentication="principal.username" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                        <li><a class="dropdown-item" th:href="@{'/app/account-details'}">Account</a></li>
+                        <li><a class="dropdown-item" id="logoutLink" href="">Logout</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </span>
     </div>
 </nav>
 <div class="container">
@@ -99,12 +125,12 @@
                 <span th:if="${product.inStock}" class="text-success"><b>In stock</b></span>
                 <span th:unless="${product.inStock}" class="text-danger"><b>Out of stock</b></span>
             </div>
-            <div>
-                <input type="text" size="5" value="1">
-            </div>
-            <div class="mt-3">
-                <input type="button" value="Add to Cart" class="btn btn-primary">
-            </div>
+            <th:block th:if="${product.inStock}">
+                <div th:replace="cart/quantity_control :: quantity_control(1, ${product.id})"></div>
+                <div class="mt-3">
+                    <input type="button" value="Add to Cart" id="buttonAdd2Cart" class="btn btn-primary">
+                </div>
+            </th:block>
         </div>
     </div>
     <div class="row">
@@ -138,6 +164,56 @@
             document.logoutForm.submit()
         });
     });
+</script>
+<script type="text/javascript">
+    productId = "[[${product.id}]]";
+    let csrfHeaderName = "[[${_csrf.headerName}]]";
+    let csrfValue = "[[${_csrf.token}]]";
+    $(document).ready(function() {
+        $(".linkMinus").on("click", function(evt) {
+            evt.preventDefault();
+            productId = $(this).attr("pid");
+            quantityInput = $("#quantity" + productId);
+            newQuantity = parseInt(quantityInput.val()) - 1;
+
+            if (newQuantity > 0) {
+                quantityInput.val(newQuantity);
+            }
+        });
+
+        $(".linkPlus").on("click", function(evt) {
+            evt.preventDefault();
+            productId = $(this).attr("pid");
+            quantityInput = $("#quantity" + productId);
+            newQuantity = parseInt(quantityInput.val()) + 1;
+
+            if (newQuantity <= 100) {
+                quantityInput.val(newQuantity);
+            }
+        });
+
+        $("#buttonAdd2Cart").on("click", function(evt) {
+            addToCart();
+        });
+    });
+
+    function addToCart() {
+        quantity = $("#quantity" + productId).val();
+        url = "/app/cart/add/" + productId + "/" + quantity;
+
+        $.ajax({
+            type: "POST",
+            url: url,
+            beforeSend: function(xhr) {
+                xhr.setRequestHeader(csrfHeaderName, csrfValue);
+            }
+        }).done(function(response) {
+            alert(response);
+        }).fail(function(response) {
+            alert(response);
+        });
+    }
+
 </script>
 </body>
 </html>

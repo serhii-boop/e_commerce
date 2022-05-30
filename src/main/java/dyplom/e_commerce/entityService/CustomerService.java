@@ -92,6 +92,17 @@ public class CustomerService {
         customerRepository.save(customerInForm);
     }
 
+    public void update(Customer customerInForm) {
+        Customer customerInDb = customerRepository.findById(customerInForm.getId()).get();
+        if (!customerInForm.getPassword().isEmpty()) {
+            String encodePassword = passwordEncoder.encode(customerInForm.getPassword());
+            customerInForm.setPassword(encodePassword);
+        } else {
+            customerInForm.setPassword(customerInDb.getPassword());
+        }
+        customerRepository.save(customerInForm);
+    }
+
 
     public void delete(Integer id) {
         Long count = customerRepository.countById(id);

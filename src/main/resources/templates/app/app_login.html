@@ -26,6 +26,9 @@
         <span th:case="${false}">
             <ul class="navbar-nav" >
                 <li class="nav-item">
+                    <a href="" class="nav-link">Careers</a>
+                </li>
+                <li class="nav-item">
                     <a href="" class="nav-link">Payment</a>
                 </li>
                 <li class="nav-item">
@@ -45,6 +48,9 @@
         <span th:case="${true}">
             <ul class="navbar-nav" >
                 <li class="nav-item">
+                    <a href="" class="nav-link">Careers</a>
+                </li>
+                <li class="nav-item">
                     <a href="" class="nav-link">Payment</a>
                 </li>
                 <li class="nav-item">
@@ -52,12 +58,6 @@
                 </li>
                 <li class="nav-item">
                     <a href="" class="nav-link">Contact</a>
-                </li>
-                <li class="nav-item">
-                    <a th:href="@{/app/address}" class="nav-link">Address book</a>
-                </li>
-                <li class="nav-item">
-                    <a th:href="@{/app/cart}" class="nav-link">Cart</a>
                 </li>
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" sec:authentication="principal.username" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -71,27 +71,28 @@
         </span>
     </div>
 </nav>
-<div class="col-md container">
-    <nav class="navbar navbar-expand-sm">
-        <div class="collapse navbar-collapse" id="searchNavbar">
-            <form class="d-flex m-3" th:action="@{/search}" method="get">
-                <input type="search" name="keyword" class="form-control" th:value="keyword" placeholder="keyword" required>
-                <input type="submit" value="Search" style="margin-left: 5px" class="btn btn-outline-success">
-            </form>
+
+<div class="container text-center">
+    <h2>Customer login</h2>
+    <div class="d-flex justify-content-center">
+    <form class="form-signin" method="post" th:action="@{'/app/login'}" style="width: 600px">
+        <div th:if="${param.error}">
+            <p class="text-danger">[[${session.SPRING_SECURITY_LAST_EXCEPTION.message}]]</p>
         </div>
-    </nav>
-</div>
-<div class="container">
-    <h2>Shopping by category</h2>
-    <div class="row card-deck p-4">
-            <div class="col mb-4" th:each="cat: ${listCategory}">
-                <div class="card">
-                    <img th:src="@{${cat.logoImagePath}}" alt="Logo" width="300px">
-                    <div class="card-body">
-                        <a th:href="@{'/app/c/' + ${cat.name}}">[[${cat.name}]]</a>
-                    </div>
-                </div>
-            </div>
+        <div th:if="${param.logout}">
+            <p class="text-warning">You have been logged out</p>
+        </div>
+        <h2 class="form-signin-heading">Please sign in</h2>
+        <p>
+            <label for="username" class="sr-only">Username</label>
+            <input type="text" id="username" name="username" class="form-control" placeholder="Username" required autofocus>
+        </p>
+        <p>
+            <label for="password" class="sr-only">Password</label>
+            <input type="password" id="password" name="password" class="form-control" placeholder="Password" required>
+        </p>
+        <button class="btn btn-lg btn-primary btn-block" type="submit">Login</button>
+    </form>
     </div>
 </div>
 <script type="text/javascript">

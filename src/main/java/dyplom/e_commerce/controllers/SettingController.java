@@ -1,6 +1,5 @@
 package dyplom.e_commerce.controllers;
 
-import dyplom.e_commerce.entities.Currency;
 import dyplom.e_commerce.entities.setting.Setting;
 import dyplom.e_commerce.entityService.SettingService;
 import org.springframework.stereotype.Controller;

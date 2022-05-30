@@ -6,7 +6,7 @@
     <meta name="viewport"
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Document</title>
+    <title>[[${pageTitle}]]</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" integrity="sha512-KfkfwYDsLkIlwQp6LFnl8zNdLGxu9YAA1QvwINks4PhcElQSvqcyVLLD9aMhXd13uQjoXtEKNosOWaZqXgel0g==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link rel="stylesheet" type="text/css" th:href="@{/css/style.css}">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
@@ -71,28 +71,79 @@
         </span>
     </div>
 </nav>
-<div class="col-md container">
-    <nav class="navbar navbar-expand-sm">
-        <div class="collapse navbar-collapse" id="searchNavbar">
-            <form class="d-flex m-3" th:action="@{/search}" method="get">
-                <input type="search" name="keyword" class="form-control" th:value="keyword" placeholder="keyword" required>
-                <input type="submit" value="Search" style="margin-left: 5px" class="btn btn-outline-success">
-            </form>
-        </div>
-    </nav>
-</div>
-<div class="container">
-    <h2>Shopping by category</h2>
-    <div class="row card-deck p-4">
-            <div class="col mb-4" th:each="cat: ${listCategory}">
-                <div class="card">
-                    <img th:src="@{${cat.logoImagePath}}" alt="Logo" width="300px">
-                    <div class="card-body">
-                        <a th:href="@{'/app/c/' + ${cat.name}}">[[${cat.name}]]</a>
+<div class="container text-center">
+    <h2>Add new address</h2>
+    <div class="container text-center">
+        <h2>Customer registration</h2>
+        <form th:action="@{/app/address/save}" method="post" th:object="${address}"
+              style="max-width: 600px; margin: 0 auto">
+            <input type="hidden" th:field="*{id}">
+            <input type="hidden" th:field="*{defaultForShipping}">
+            <div class="border border-secondary rounded p-3">
+                <div class="form-group row">
+                    <label class="col-sm-4 col-form-label">First name: </label>
+                    <div class="col-sm-8">
+                        <input type="text" th:field="*{firstName}" class="form-control" required="required">
                     </div>
                 </div>
+                <div>&nbsp;</div>
+                <div class="form-group row">
+                    <label class="col-sm-4 col-form-label">Last name: </label>
+                    <div class="col-sm-8">
+                        <input type="text" th:field="*{lastName}" class="form-control" required="required" maxlength="45" minlength="2">
+                    </div>
+                </div>
+                <div>&nbsp;</div>
+                <div class="form-group row">
+                    <label class="col-sm-4 col-form-label">Phone number: </label>
+                    <div class="col-sm-8">
+                        <input type="text" th:field="*{phoneNumber}" class="form-control" required="required" maxlength="15" minlength="8">
+                    </div>
+                </div>
+                <div>&nbsp;</div>
+                <div class="form-group row">
+                    <label class="col-sm-4 col-form-label">Address line 1: </label>
+                    <div class="col-sm-8">
+                        <input type="text" th:field="*{addressLine1}" class="form-control" required="required" maxlength="64" minlength="3">
+                    </div>
+                </div>
+                <div>&nbsp;</div>
+                <div class="form-group row">
+                    <label class="col-sm-4 col-form-label">Address line 2: </label>
+                    <div class="col-sm-8">
+                        <input type="text" th:field="*{addressLine2}" class="form-control" maxlength="64" minlength="3">
+                    </div>
+                </div>
+                <div>&nbsp;</div>
+                <div class="form-group row">
+                    <label class="col-sm-4 col-form-label">Country: </label>
+                    <div class="col-sm-8">
+                        <input type="text" th:field="*{country}" class="form-control" required="required" maxlength="64" minlength="2">
+                    </div>
+                </div>
+                <div>&nbsp;</div>
+                <div class="form-group row">
+                    <label class="col-sm-4 col-form-label">City: </label>
+                    <div class="col-sm-8">
+                        <input type="text" th:field="*{city}" class="form-control" required="required" maxlength="64" minlength="3">
+                    </div>
+                </div>
+                <div>&nbsp;</div>
+                <div class="form-group row">
+                    <label class="col-sm-4 col-form-label">Postal code: </label>
+                    <div class="col-sm-8">
+                        <input type="text" th:field="*{postalCode}" class="form-control" required="required" maxlength="10" minlength="3">
+                    </div>
+                </div>
+
+                <div class="text-center">
+                    <div>&nbsp;</div>
+                    <input type="submit" value="Update account" class="btn btn-primary">
+                </div>
             </div>
+        </form>
     </div>
+
 </div>
 <script type="text/javascript">
     $(document).ready(function () {
@@ -101,6 +152,7 @@
             document.logoutForm.submit()
         });
     });
+
 </script>
 </body>
 </html>
