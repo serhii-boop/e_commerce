@@ -124,7 +124,9 @@
                 <b> - UAH</b>
             </div>
             <div class="mt-2">
-                <button class="btn btn-success">Check out</button>
+                <form th:action="@{/app/checkout}">
+                    <button type="submit" class="btn btn-success">Check out</button>
+                </form>
             </div>
         </div>
         <div id="sectionEmptyCartMessage" th:class="'text-center' + ${#lists.isEmpty(cartItems) ? '' : 'd-none'}" th:if="${#lists.isEmpty(cartItems)}">

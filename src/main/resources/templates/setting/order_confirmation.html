@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="https://www.thymeleaf.org.thymeleaf-extras-springsecurity5">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+<div th:fragment="content" th:remove="tag">
+
+    <div class="form-group row">
+        <label class="col-sm-2 col-form-label">Email subject:</label>
+        <div class="col-sm-10">
+            <input type="text" class="form-control" name="ORDER_CONFIRMATION_SUBJECT" th:value="${ORDER_CONFIRMATION_SUBJECT}">
+        </div>
+    </div>
+    <div>&nbsp;</div>
+    <div class="form-group row">
+        <label class="col-sm-2 col-form-label">Email content:</label>
+        <div class="col-sm-10">
+            <input type="text" class="form-control" name="ORDER_CONFIRMATION_CONTENT" th:value="${ORDER_CONFIRMATION_CONTENT}">
+        </div>
+    </div>
+
+</div>
+</body>
+</html>

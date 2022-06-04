@@ -44,6 +44,14 @@ public class Order {
 
     public Order() {}
 
+    public Order(Integer id,Date orderTime, float productCost, float subtotal, float total) {
+        this.id = id;
+        this.orderTime = orderTime;
+        this.productCost = productCost;
+        this.subtotal = subtotal;
+        this.total = total;
+    }
+
     public Integer getId() {
         return id;
     }
@@ -181,6 +189,44 @@ public class Order {
         setCity(customer.getCity());
         setCountry(customer.getCountry());
         setPostalCode(customer.getPostalCode());
+    }
+
+    public void copyShippingAddress(Address address) {
+        setFirstName(address.getFirstName());
+        setLastName(address.getLastName());
+        setPhoneNumber(address.getPhoneNumber());
+        setAddressLine1(address.getAddressLine1());
+        setAddressLine2(address.getAddressLine2());
+        setCity(address.getCity());
+        setCountry(address.getCountry());
+        setPostalCode(address.getPostalCode());
+    }
+
+    @Transient
+    public String getShippingAddress() {
+        String address = firstName;
+        if (lastName != null && !lastName.isEmpty()) {
+            address += " " + lastName;
+        }
+        if (!addressLine1.isEmpty()) address += ", " + addressLine1;
+        if (addressLine2 != null && !addressLine2.isEmpty()) address += " " + addressLine2;
+        if (!city.isEmpty()) address += ", " + city;
+        address += ", " + country;
+        if (!postalCode.isEmpty()) address += ". Postal code: " + postalCode;
+        if (!phoneNumber.isEmpty()) address += ". Phone number: " + phoneNumber;
+        return address;
+    }
+    @Transient
+    public String getProductNames() {
+        String productNames = "";
+        productNames = "<ul>";
+
+        for (OrderDetail detail: getOrderDetails()) {
+            productNames += "<li>" + detail.getProduct().getName() + "</li>";
+        }
+        productNames += "</ul>";
+
+        return productNames;
     }
 
     @Transient

@@ -25,6 +25,21 @@ public class OrderDetail {
 
     public OrderDetail() {}
 
+    public OrderDetail(String categoryName, int quantity, float productCost, float subtotal) {
+        this.product = new Product();
+        this.product.setCategory(new Category(categoryName));
+        this.quantity = quantity;
+        this.productCost = productCost;
+        this.subtotal = subtotal;
+    }
+
+    public OrderDetail(int quantity, String productName, float productCost, float subtotal) {
+        this.product = new Product(productName);
+        this.quantity = quantity;
+        this.productCost = productCost;
+        this.subtotal = subtotal;
+    }
+
     public Integer getId() {
         return id;
     }

@@ -9,6 +9,9 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.Date;
+import java.util.List;
+
 @Repository
 public interface OrderRepository extends PagingAndSortingRepository<Order, Integer> {
 
@@ -22,6 +25,17 @@ public interface OrderRepository extends PagingAndSortingRepository<Order, Integ
             + " o.customer.lastName LIKE %?1%")
     Page<Order> findAll(String keyword, Pageable pageable);
 
+    @Query("select o from Order o join o.orderDetails od join od.product p " +
+            "where o.customer.id = ?2 " +
+            "and (p.name LIKE %?1% or o.status like %?1%)")
+    Page<Order> findAllByCustomerId(String keyword, Integer customerId, Pageable pageable);
+    @Query("select o from Order o where o.customer.id = ?1")
+    Page<Order> findAllByCustomerId(Integer customerId, Pageable pageable);
+
     Long countById(Integer id);
+
+    @Query("select new dyplom.e_commerce.entities.Order(o.id, o.orderTime, o.productCost, o.subtotal, o.total)" +
+            " from Order o where o.orderTime between ?1 and ?2 order by o.orderTime asc ")
+    List<Order> findByOrderTimeBetween(Date startTime, Date endTime);
 
 }

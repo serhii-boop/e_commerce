@@ -29,7 +29,8 @@ public class CustomerWebSecurity extends WebSecurityConfigurerAdapter {
         http.authorizeRequests()
                 .antMatchers("/js/**").permitAll()
                 .antMatchers("/app", "/app/**", "/search", "/search/**").permitAll()
-                .antMatchers("/app/account-details", "/app/cart", "/app/address", "/app/address/**").authenticated()
+                .antMatchers("/app/account-details", "/app/cart", "/app/address", "/app/address/**",
+                        "/app/checkout", "/app/place-order", "/app/orders", "/app/orders/**").authenticated()
                 .antMatchers("/admin-page").hasAnyAuthority("Admin", "Editor")
                 .antMatchers("/admin-page/**").hasAnyAuthority("Admin", "Editor")
                 .antMatchers("/app/customer").authenticated()

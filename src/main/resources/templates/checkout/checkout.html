@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="https://www.thymeleaf.org.thymeleaf-extras-springsecurity5">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" integrity="sha512-KfkfwYDsLkIlwQp6LFnl8zNdLGxu9YAA1QvwINks4PhcElQSvqcyVLLD9aMhXd13uQjoXtEKNosOWaZqXgel0g==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" type="text/css" th:href="@{/css/style.css}">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js" ></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.min.js" integrity="sha384-Atwg2Pkwv9vp0ygtn1JAojH0nYbwNJLPhwyoVbhoPwBhjQPR5VtM2+xf0Uwh9KtT" crossorigin="anonymous"></script>
+    <link href="https://cdn.jsdelivr.net/npm/boxicons@latest/css/boxicons.min.css" rel="stylesheet">
+
+</head>
+<body>
+<form th:action="@{'/logout'}" method="post" th:hidden="true" name="logoutForm">
+    <input type="submit">
+</form>
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="container" th:switch="${#authentication}? ${#authorization.expression('isAuthenticated()')} : ${false}">
+        <a th:href="@{/app}" class="navbar-brand"><h1>Logo</h1></a>
+        <span th:case="${false}">
+            <ul class="navbar-nav" >
+                <li class="nav-item">
+                    <a href="" class="nav-link">Careers</a>
+                </li>
+                <li class="nav-item">
+                    <a href="" class="nav-link">Payment</a>
+                </li>
+                <li class="nav-item">
+                    <a href="" class="nav-link">Shipping &amp; Delivery</a>
+                </li>
+                <li class="nav-item">
+                    <a th:href="@{/app/login}" class="nav-link">Login</a>
+                </li>
+                <li class="nav-item">
+                    <a th:href="@{/app/register}" class="nav-link">Register</a>
+                </li>
+                <li class="nav-item">
+                    <a href="" class="nav-link">Contact</a>
+                </li>
+            </ul>
+        </span>
+        <span th:case="${true}">
+            <ul class="navbar-nav" >
+                <li class="nav-item">
+                    <a href="" class="nav-link">Careers</a>
+                </li>
+                <li class="nav-item">
+                    <a href="" class="nav-link">Payment</a>
+                </li>
+                <li class="nav-item">
+                    <a href="" class="nav-link">Shipping &amp; Delivery</a>
+                </li>
+                <li class="nav-item">
+                    <a href="" class="nav-link">Contact</a>
+                </li>
+                <li class="nav-item">
+                    <a th:href="@{/app/cart}" class="nav-link">Cart</a>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" sec:authentication="principal.username" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                        <li><a class="dropdown-item" th:href="@{'/app/account-details'}">Account</a></li>
+                        <li><a class="dropdown-item" id="logoutLink" href="">Logout</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </span>
+    </div>
+</nav>
+<div class="container">
+    <h2>Checkout</h2>
+
+    <div class="row m-1">
+        <div class="col-sm-8">
+            <div class="card">
+                <div class="card-header"><h5>Shipping information</h5></div>
+                <div class="card-body">
+                    <p>
+                        <b>Ship to:</b> [[${shippingAddress}]]
+                        <a th:href="@{/app/address}">[Ship to another address]</a>
+                    </p>
+                </div>
+            </div>
+            <div>&nbsp;</div>
+            <div class="card">
+                <div class="card-header"><h5>Payment method</h5></div>
+                <div class="card-body">
+                    <div class="text-center">
+                        <form th:action="@{/app/place-order}" method="post">
+                            <input type="submit" value="Buy" class="btn btn-primary">
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-4">
+            <div class="card">
+                <div class="card-header"><h5>Order summary</h5></div>
+                <div class="card-body">
+                    <table>
+                        <th:block th:each="item: ${cartItems}">
+                            <tr th:with="product = ${item.product}">
+                                <td>[[${item.quantity}]] X &nbsp;&nbsp;</td>
+                                <td width="70%">
+                                    <a th:href="@{'/app/p/' + ${product.id}}" target="_blank">[[${product.name}]]</a>
+                                </td>
+                                <td>
+                                    [[${item.subTotal}]]
+                                </td>
+                            </tr>
+                        </th:block>
+                        <tr>
+                            <td colspan="3">
+                                <hr>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col">Product total: </div>
+                            <div class="col">[[${checkoutInfo.productTotal}]]</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $("#logoutLink").on("click", function (e) {
+            e.preventDefault();
+            document.logoutForm.submit()
+        });
+    });
+</script>
+</body>
+</html>
