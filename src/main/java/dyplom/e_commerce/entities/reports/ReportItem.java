@@ -7,6 +7,7 @@ public class ReportItem {
     private String ident;
     private float sales;
     private int ordersCount;
+    private int productsCount;
 
     public ReportItem() {}
 
@@ -19,6 +20,19 @@ public class ReportItem {
         this.sales = sales;
     }
 
+    public ReportItem(String ident, float sales, int productsCount) {
+        this.ident = ident;
+        this.sales = sales;
+        this.productsCount = productsCount;
+    }
+
+    public int getProductsCount() {
+        return productsCount;
+    }
+
+    public void setProductsCount(int productsCount) {
+        this.productsCount = productsCount;
+    }
 
     public String getIdent() {
         return ident;
@@ -63,5 +77,9 @@ public class ReportItem {
 
     public void increaseOrderCount() {
         this.ordersCount++;
+    }
+
+    public void increaseProductsCount(int count) {
+        this.productsCount += count;
     }
 }

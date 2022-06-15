@@ -21,13 +21,6 @@ function loadSalesReportByDate(period) {
     });
 }
 
-function initCustomDateRange() {
-    toDate = new Date();
-    endDateField.valueAsDate = toDate;
-    fromDate = new Date();
-    fromDate.setDate(toDate.getDate() - 30);
-    startDateField.valueAsDate = fromDate;
-}
 
 function prepareChartDate(responseJSON) {
 
